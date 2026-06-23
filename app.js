@@ -1,28 +1,85 @@
 /**
- * VENDRIX BI - ENGINE CORE DE ARQUITECTURA EN LA NUBE (TIEMPO REAL)
+ * VENDRIX Enterprise Suite - ENGINE CORE DE ARQUITECTURA MULTI-MÓDULO REACTIVA
  */
 
-// TU URL MAESTRA DE GOOGLE FIREBASE
-const FIREBASE_URL = "https://vendrix-bi-default-rtdb.firebaseio.com";
+let DICCIONARIO_PRODUCTOS = {
+    "1": { "nombre": "Agua San Luis 625ml", "precio": 2.50, "costo": 1.00 },
+    "3": { "nombre": "Galleta Casino Menta", "precio": 1.20, "costo": 0.50 },
+    "5": { "nombre": "Galleta Casino Vainilla", "precio": 1.50, "costo": 0.60 },
+    "7": { "nombre": "Chocolates M&M", "precio": 2.50, "costo": 1.10 },
+    "9": { "nombre": "Gaseosa Coca-Cola Zero", "precio": 2.00, "costo": 1.20 },
+    "11": { "nombre": "Chocolate Sublime Gr", "precio": 2.00, "costo": 1.10 },
+    "12": { "nombre": "Gaseosa Sprite 500ml", "precio": 1.20, "costo": 0.70 },
+    "13": { "nombre": "Papas Lays Onduladas", "precio": 1.80, "costo": 1.00 },
+    "14": { "nombre": "Doritos Mega Queso", "precio": 2.00, "costo": 1.10 },
+    "15": { "nombre": "Cereal Bar Ángel", "precio": 2.00, "costo": 0.80 },
+    "16": { "nombre": "Galleta Margarita 4pk", "precio": 1.30, "costo": 0.60 },
+    "17": { "nombre": "Galleta Ritz", "precio": 1.50, "costo": 0.70 },
+    "18": { "nombre": "Pringles Original Tarro", "precio": 3.80, "costo": 2.10 },
+    "19": { "nombre": "Gaseosa Fanta Naranja", "precio": 1.20, "costo": 0.70 },
+    "20": { "nombre": "Agua Cielo Sin Gas", "precio": 1.20, "costo": 0.50 },
+    "21": { "nombre": "Galleta Morocha", "precio": 1.80, "costo": 0.90 },
+    "22": { "nombre": "Galleta Charada Maní", "precio": 1.80, "costo": 0.90 },
+    "23": { "nombre": "Chocolate Princesa", "precio": 1.80, "costo": 0.95 },
+    "24": { "nombre": "Galleta Chomp Vainilla", "precio": 1.80, "costo": 0.90 },
+    "25": { "nombre": "Gomitas Mogul Ositos", "precio": 2.00, "costo": 1.10 },
+    "26": { "nombre": "Barra Proteica Max", "precio": 2.50, "costo": 1.30 },
+    "27": { "nombre": "Papas Nativas Inka Chips", "precio": 1.50, "costo": 0.80 },
+    "28": { "nombre": "Maní Cervecero Karinto", "precio": 1.80, "costo": 1.00 },
+    "29": { "nombre": "Habas Saladas Karinto", "precio": 1.80, "costo": 0.90 },
+    "30": { "nombre": "Platanitos Natuchips", "precio": 1.00, "costo": 0.50 },
+    "31": { "nombre": "Gaseosa Inca Kola Sin Azúcar", "precio": 2.00, "costo": 1.20 },
+    "33": { "nombre": "Galleta Soda Field", "precio": 2.00, "costo": 0.80 },
+    "34": { "nombre": "Wafer Nik Vainilla", "precio": 1.50, "costo": 0.70 },
+    "35": { "nombre": "Chocolate Snickers Bar", "precio": 2.00, "costo": 1.20 },
+    "36": { "nombre": "Sublime Extremo Bar", "precio": 1.80, "costo": 1.00 },
+    "37": { "nombre": "Galleta Blackout San Jorge", "precio": 1.80, "costo": 0.90 },
+    "38": { "nombre": "Gomitas Ambrosoli Eucalipto", "precio": 2.00, "costo": 1.10 },
+    "39": { "nombre": "Gaseosa Inca Kola 500ml", "precio": 1.30, "costo": 0.80 },
+    "40": { "nombre": "Agua San Luis Con Gas", "precio": 1.50, "costo": 0.60 },
+    "41": { "nombre": "Cuates Picantes Bolsa", "precio": 2.50, "costo": 1.30 },
+    "42": { "nombre": "Papas Lays Al Hilo", "precio": 2.50, "costo": 1.30 },
+    "43": { "nombre": "Galletas Oreo Regular", "precio": 2.00, "costo": 1.00 },
+    "44": { "nombre": "Barra Cereal Quaker Avena", "precio": 2.00, "costo": 0.90 },
+    "45": { "nombre": "Gaseosa Coca-Cola Regular", "precio": 2.00, "costo": 1.20 },
+    "46": { "nombre": "Bizcocho Pingüinos Marinela", "precio": 2.00, "costo": 1.10 },
+    "47": { "nombre": "Galleta Soda Field Crocante", "precio": 2.00, "costo": 0.80 },
+    "48": { "nombre": "Gaseosa Fanta Kola Inglesa", "precio": 1.20, "costo": 0.70 },
+    "49": { "nombre": "Papas Lays Clásicas", "precio": 2.00, "costo": 1.10 },
+    "50": { "nombre": "Doritos Flamin Hot", "precio": 2.50, "costo": 1.30 },
+    "51": { "nombre": "Cuates Queso Bolsa", "precio": 2.80, "costo": 1.40 },
+    "52": { "nombre": "Wafer Costa Vainilla", "precio": 2.80, "costo": 1.35 },
+    "53": { "nombre": "Gomitas Mogul Ácidas", "precio": 2.80, "costo": 1.40 },
+    "54": { "nombre": "Gaseosa Inca Kola Regular", "precio": 2.80, "costo": 1.50 },
+    "55": { "nombre": "Barra Proteica Whey Bar", "precio": 3.00, "costo": 1.60 },
+    "56": { "nombre": "Maní Con Pasas Karinto", "precio": 1.50, "costo": 0.80 },
+    "57": { "nombre": "Galleta Coronita Chocolate", "precio": 2.50, "costo": 1.20 },
+    "58": { "nombre": "Chocolate Milky Way Bar", "precio": 3.00, "costo": 1.50 },
+    "59": { "nombre": "Galleta Tentación Choc", "precio": 2.50, "costo": 1.30 },
+    "60": { "nombre": "Nestlé Nesquik Chocolate", "precio": 1.50, "costo": 0.80 }
+};
 
-let DICCIONARIO_PRODUCTOS = {};
 let DATABASE_STATE = [];
 let STAGING_MEMORIA_TEMPORAL = []; 
 let HISTORIAL_COMPRAS_LOTES = []; 
 let HISTORIAL_GASTOS_EXTRA = []; 
 
+// NUEVAS MATRICES DE DATOS PARA COMPRAS DE MÁQUINAS Y PROYECTOS GANTT
+let REGISTRO_VENTAS_MAQUINAS = [];
+let REGISTRO_PROYECTOS_GANTT = [];
+
 let CURRENT_EDIT_LOTE_ID = null;
 let chartHistory = null, chartPayments = null, chartTopProducts = null;
-let dtInstance = null, dtDicMaster = null, dtSimulationOrder = null, dtGastosMaster = null;
+let dtInstance = null, dtDicMaster = null, dtSimulationOrder = null, dtGastosMaster = null, dtMachinesMaster = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('stockInvoiceDate').value = new Date().toISOString().split('T')[0];
     document.getElementById('gastoDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('projStartDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('projEndDate').value = new Date().toISOString().split('T')[0];
     setupNavigation();
     setupUIEventListeners();
-    
-    // CORAZÓN DE LA NUBE: Jalar los datos del servidor de Google apenas se abre el link
-    cargarDatosDeLaNube();
+    loadApplicationData();
 });
 
 function setupNavigation() {
@@ -36,121 +93,65 @@ function setupNavigation() {
             const targetId = link.getAttribute('href').substring(1);
             document.querySelectorAll('.content-view').forEach(view => { view.classList.add('d-none'); });
             document.getElementById(targetId).classList.remove('d-none');
+
+            // Ocultar barra de filtros globales si se entra a proyectos o venta de máquinas para no estorbar
+            const filterCard = document.getElementById('globalFilterCard');
+            if(targetId === 'vendrix-ventas-section' || targetId === 'vendrix-proyectos-section') {
+                filterCard.classList.add('d-none');
+            } else {
+                filterCard.classList.remove('d-none');
+            }
         });
     });
 }
 
-// FUNCIONES MAESTRAS DE SINCRONIZACIÓN EN LA NUBE
-function guardarEnLaNube(nodo, datos) {
-    fetch(`${FIREBASE_URL}/${nodo}.json`, {
-        method: 'PUT',
-        body: JSON.stringify(datos),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(res => res.json())
-    .then(() => {
-        processAndRenderAll();
-    })
-    .catch(err => console.error("Error guardando en la nube:", err));
-}
+function loadApplicationData() {
+    const localStore = localStorage.getItem('vendrix_bi_stored_data');
+    const localLotes = localStorage.getItem('vendrix_bi_stored_lotes');
+    const localDic = localStorage.getItem('vendrix_bi_stored_dic');
+    const localGastos = localStorage.getItem('vendrix_bi_stored_gastos');
+    const localMachines = localStorage.getItem('vendrix_stored_machines');
+    const localGantt = localStorage.getItem('vendrix_stored_gantt');
 
-function cargarDatosDeLaNube() {
-    // 1. Cargar Diccionario
-    fetch(`${FIREBASE_URL}/diccionario.json`)
-    .then(res => res.json())
-    .then(dic => {
-        // Si la nube está vacía, cargar los 60 productos iniciales automáticamente
-        if (!dic || Object.keys(dic).length === 0) {
-            DICCIONARIO_PRODUCTOS = {
-                "1": { "nombre": "Agua San Luis 625ml", "precio": 2.50, "costo": 1.00 },
-                "3": { "nombre": "Galleta Casino Menta", "precio": 1.20, "costo": 0.50 },
-                "5": { "nombre": "Galleta Casino Vainilla", "precio": 1.50, "costo": 0.60 },
-                "7": { "nombre": "Chocolates M&M", "precio": 2.50, "costo": 1.10 },
-                "9": { "nombre": "Gaseosa Coca-Cola Zero", "precio": 2.00, "costo": 1.20 },
-                "11": { "nombre": "Chocolate Sublime Gr", "precio": 2.00, "costo": 1.10 },
-                "12": { "nombre": "Gaseosa Sprite 500ml", "precio": 1.20, "costo": 0.70 },
-                "13": { "nombre": "Papas Lays Onduladas", "precio": 1.80, "costo": 1.00 },
-                "14": { "nombre": "Doritos Mega Queso", "precio": 2.00, "costo": 1.10 },
-                "15": { "nombre": "Cereal Bar Ángel", "precio": 2.00, "costo": 0.80 },
-                "16": { "nombre": "Galleta Margarita 4pk", "precio": 1.30, "costo": 0.60 },
-                "17": { "nombre": "Galleta Ritz", "precio": 1.50, "costo": 0.70 },
-                "18": { "nombre": "Pringles Original Tarro", "precio": 3.80, "costo": 2.10 },
-                "19": { "nombre": "Gaseosa Fanta Naranja", "precio": 1.20, "costo": 0.70 },
-                "20": { "nombre": "Agua Cielo Sin Gas", "precio": 1.20, "costo": 0.50 },
-                "21": { "nombre": "Galleta Morocha", "precio": 1.80, "costo": 0.90 },
-                "22": { "nombre": "Galleta Charada Maní", "precio": 1.80, "costo": 0.90 },
-                "23": { "nombre": "Chocolate Princesa", "precio": 1.80, "costo": 0.95 },
-                "24": { "nombre": "Galleta Chomp Vainilla", "precio": 1.80, "costo": 0.90 },
-                "25": { "nombre": "Gomitas Mogul Ositos", "precio": 2.00, "costo": 1.10 },
-                "26": { "nombre": "Barra Proteica Max", "precio": 2.50, "costo": 1.30 },
-                "27": { "nombre": "Papas Nativas Inka Chips", "precio": 1.50, "costo": 0.80 },
-                "28": { "nombre": "Maní Cervecero Karinto", "precio": 1.80, "costo": 1.00 },
-                "29": { "nombre": "Habas Saladas Karinto", "precio": 1.80, "costo": 0.90 },
-                "30": { "nombre": "Platanitos Natuchips", "precio": 1.00, "costo": 0.50 },
-                "31": { "nombre": "Gaseosa Inca Kola Sin Azúcar", "precio": 2.00, "costo": 1.20 },
-                "33": { "nombre": "Galleta Soda Field", "precio": 2.00, "costo": 0.80 },
-                "34": { "nombre": "Wafer Nik Vainilla", "precio": 1.50, "costo": 0.70 },
-                "35": { "nombre": "Chocolate Snickers Bar", "precio": 2.00, "costo": 1.20 },
-                "36": { "nombre": "Sublime Extremo Bar", "precio": 1.80, "costo": 1.00 },
-                "37": { "nombre": "Galleta Blackout San Jorge", "precio": 1.80, "costo": 0.90 },
-                "38": { "nombre": "Gomitas Ambrosoli Eucalipto", "precio": 2.00, "costo": 1.10 },
-                "39": { "nombre": "Gaseosa Inca Kola 500ml", "precio": 1.30, "costo": 0.80 },
-                "40": { "nombre": "Agua San Luis Con Gas", "precio": 1.50, "costo": 0.60 },
-                "41": { "nombre": "Cuates Picantes Bolsa", "precio": 2.50, "costo": 1.30 },
-                "42": { "nombre": "Papas Lays Al Hilo", "precio": 2.50, "costo": 1.30 },
-                "43": { "nombre": "Galletas Oreo Regular", "precio": 2.00, "costo": 1.00 },
-                "44": { "nombre": "Barra Cereal Quaker Avena", "precio": 2.00, "costo": 0.90 },
-                "45": { "nombre": "Gaseosa Coca-Cola Regular", "precio": 2.00, "costo": 1.20 },
-                "46": { "nombre": "Bizcocho Pingüinos Marinela", "precio": 2.00, "costo": 1.10 },
-                "47": { "nombre": "Galleta Soda Field Crocante", "precio": 2.00, "costo": 0.80 },
-                "48": { "nombre": "Gaseosa Fanta Kola Inglesa", "precio": 1.20, "costo": 0.70 },
-                "49": { "nombre": "Papas Lays Clásicas", "precio": 2.00, "costo": 1.10 },
-                "50": { "nombre": "Doritos Flamin Hot", "precio": 2.50, "costo": 1.30 },
-                "51": { "nombre": "Cuates Queso Bolsa", "precio": 2.80, "costo": 1.40 },
-                "52": { "nombre": "Wafer Costa Vainilla", "precio": 2.80, "costo": 1.35 },
-                "53": { "nombre": "Gomitas Mogul Ácidas", "precio": 2.80, "costo": 1.40 },
-                "54": { "nombre": "Gaseosa Inca Kola Regular", "precio": 2.80, "costo": 1.50 },
-                "55": { "nombre": "Barra Proteica Whey Bar", "precio": 3.00, "costo": 1.60 },
-                "56": { "nombre": "Maní Con Pasas Karinto", "precio": 1.50, "costo": 0.80 },
-                "57": { "nombre": "Galleta Coronita Chocolate", "precio": 2.50, "costo": 1.20 },
-                "58": { "nombre": "Chocolate Milky Way Bar", "precio": 3.00, "costo": 1.50 },
-                "59": { "nombre": "Galleta Tentación Choc", "precio": 2.50, "costo": 1.30 },
-                "60": { "nombre": "Nestlé Nesquik Chocolate", "precio": 1.50, "costo": 0.80 }
-            };
-            guardarEnLaNube("diccionario", DICCIONARIO_PRODUCTOS);
-        } else {
-            DICCIONARIO_PRODUCTOS = dic;
-        }
+    if (localDic) DICCIONARIO_PRODUCTOS = JSON.parse(localDic);
+    DATABASE_STATE = localStore ? JSON.parse(localStore) : [];
+    HISTORIAL_GASTOS_EXTRA = localGastos ? JSON.parse(localGastos) : [];
+    REGISTRO_VENTAS_MAQUINAS = localMachines ? JSON.parse(localMachines) : [];
+    
+    // Carga de hitos iniciales de Proyectos Gantt
+    if(localGantt) {
+        REGISTRO_PROYECTOS_GANTT = JSON.parse(localGantt);
+    } else {
+        REGISTRO_PROYECTOS_GANTT = [
+            { id: "P1", cliente: "Corporativo Alfa", tarea: "Adquisición e Importación de Equipos", inicio: "2026-06-01", fin: "2026-06-10", responsable: "Logística", progreso: 100 },
+            { id: "P2", cliente: "Sede Centro", tarea: "Negociación de Espacios y Permisos", inicio: "2026-06-08", fin: "2026-06-18", responsable: "Dirección", progreso: 75 },
+            { id: "P3", cliente: "Sede Centro", tarea: "Instalación de Software y Monitoreo", inicio: "2026-06-15", fin: "2026-06-25", responsable: "Técnico BI", progreso: 25 }
+        ];
+        localStorage.setItem('vendrix_stored_gantt', JSON.stringify(REGISTRO_PROYECTOS_GANTT));
+    }
 
-        buildStockSelectorAutoComplete();
-        renderDicMasterTable();
+    // Inicialización Lotes Base
+    if (localLotes) {
+        HISTORIAL_COMPRAS_LOTES = JSON.parse(localLotes);
+    } else {
+        Object.keys(DICCIONARIO_PRODUCTOS).forEach((code, idx) => {
+            HISTORIAL_COMPRAS_LOTES.push({
+                "id_lote": `LOTE-${idx}-${Date.now().toString().substring(8)}`,
+                "num_factura": "FACT-INICIAL", "fecha_compra": "2026-05-01", "rawCode": code,
+                "costo_total": (DICCIONARIO_PRODUCTOS[code].costo || 1.00) * 150, "descuento": 0, "cantidad": 150, "costo_unitario": DICCIONARIO_PRODUCTOS[code].costo || 1.00
+            });
+        });
+        localStorage.setItem('vendrix_bi_stored_lotes', JSON.stringify(HISTORIAL_COMPRAS_LOTES));
+    }
 
-        // 2. Cargar Ventas
-        return fetch(`${FIREBASE_URL}/ventas.json`);
-    })
-    .then(res => res.json())
-    .then(ventas => {
-        DATABASE_STATE = ventas ? ventas : [];
-        populateSelectors(DATABASE_STATE);
-
-        // 3. Cargar Facturas de Compra
-        return fetch(`${FIREBASE_URL}/lotes.json`);
-    })
-    .then(res => res.json())
-    .then(lotes => {
-        HISTORIAL_COMPRAS_LOTES = lotes ? lotes : [];
-        renderInvoiceHistoryTable();
-
-        // 4. Cargar Egresos Extra
-        return fetch(`${FIREBASE_URL}/gastos.json`);
-    })
-    .then(res => res.json())
-    .then(gastos => {
-        HISTORIAL_GASTOS_EXTRA = gastos ? gastos : [];
-        renderGastosMasterTable();
-        processAndRenderAll();
-    })
-    .catch(err => console.error("Error cargando base de datos:", err));
+    buildStockSelectorAutoComplete(); 
+    renderDicMasterTable();
+    renderInvoiceHistoryTable();
+    renderGastosMasterTable();
+    renderMachineSalesMasterTable(); // Cargar tabla de máquinas
+    renderGanttLiveChart(); // Dibujar Gantt
+    populateSelectors(DATABASE_STATE);
+    processAndRenderAll();
 }
 
 function setupUIEventListeners() {
@@ -161,11 +162,15 @@ function setupUIEventListeners() {
     document.getElementById('btnCancelDicEdit').addEventListener('click', cancelDicEditMode);
     document.getElementById('formAddGasto').addEventListener('submit', handleNewGastoSubmit);
     
+    // Escuchadores de nuevos formularios matriciales
+    document.getElementById('formAddMachineSale').addEventListener('submit', handleNewMachineSaleSubmit);
+    document.getElementById('formAddProyectoTask').addEventListener('submit', handleNewProyectoTaskSubmit);
+
     document.getElementById('stockProductSelectorAutoComplete').addEventListener('change', (e) => {
         document.getElementById('stockProductCode').value = e.target.value;
     });
 
-    document.getElementById('btnForceRefreshGlobal').addEventListener('click', () => { cargarDatosDeLaNube(); });
+    document.getElementById('btnForceRefreshGlobal').addEventListener('click', () => { processAndRenderAll(); alert("¡Plataforma unificada actualizada!"); });
     ['filterStartDate', 'filterEndDate', 'filterPayment', 'filterMachine'].forEach(id => {
         document.getElementById(id).addEventListener('change', processAndRenderAll);
     });
@@ -174,6 +179,10 @@ function setupUIEventListeners() {
         document.getElementById('filterStartDate').value = ''; document.getElementById('filterEndDate').value = '';
         document.getElementById('filterPayment').value = 'TODOS'; document.getElementById('filterMachine').value = 'TODOS';
         processAndRenderAll();
+    });
+
+    document.getElementById('btnClearData').addEventListener('click', () => {
+        if(confirm("¿Anular toda la base de datos local?")) { localStorage.clear(); location.reload(); }
     });
 }
 
@@ -184,6 +193,132 @@ function buildStockSelectorAutoComplete() {
     sortedKeys.forEach(code => { select.innerHTML += `<option value="${code}">${DICCIONARIO_PRODUCTOS[code].nombre} (Casilla: ${code})</option>`; });
 }
 
+// ========================================================
+// CONTROLES DE LA NUEVA PESTAÑA: VENDRIX VENTAS (MÁQUINAS)
+// ========================================================
+function handleNewMachineSaleSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('machId').value.trim();
+    const cFactory = parseFloat(document.getElementById('machCostFactory').value) || 0;
+    const cLogistics = parseFloat(document.getElementById('machCostLogistics').value) || 0;
+    const cPeripherals = parseFloat(document.getElementById('machCostPeripherals').value) || 0;
+    const cLabor = parseFloat(document.getElementById('machCostLabor').value) || 0;
+    const priceFinal = parseFloat(document.getElementById('machPriceFinal').value) || 0;
+
+    const totalCostoNeto = cFactory + cLogistics + cPeripherals + cLabor;
+    const gananciaLiquida = priceFinal - totalCostoNeto;
+    const markupPct = totalCostoNeto > 0 ? (gananciaLiquida / totalCostoNeto) * 100 : 0;
+
+    REGISTRO_VENTAS_MAQUINAS.push({
+        id_mach: `M-${Date.now()}`, modelo: id, costo_fabrica_log: cFactory + cLogistics,
+        costo_setup: cPeripherals + cLabor, costo_total: totalCostoNeto, precio_venta: priceFinal,
+        ganancia: gananciaLiquida, markup: markupPct
+    });
+
+    localStorage.setItem('vendrix_stored_machines', JSON.stringify(REGISTRO_VENTAS_MAQUINAS));
+    document.getElementById('formAddMachineSale').reset();
+    renderMachineSalesMasterTable();
+    alert("¡Estructura de venta y márgenes de la máquina guardada correctamente!");
+}
+
+function renderMachineSalesMasterTable() {
+    const tbody = document.querySelector('#tableMachineSalesMaster tbody'); if(!tbody) return;
+    if (dtMachinesMaster) dtMachinesMaster.destroy();
+    tbody.innerHTML = '';
+
+    REGISTRO_VENTAS_MAQUINAS.forEach(m => {
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${m.modelo}</strong></td>
+                <td class="text-end font-monospace">S/ ${m.costo_fabrica_log.toFixed(2)}</td>
+                <td class="text-end font-monospace">S/ ${m.costo_setup.toFixed(2)}</td>
+                <td class="text-end font-monospace text-danger fw-bold">S/ ${m.costo_total.toFixed(2)}</td>
+                <td class="text-end font-monospace text-primary fw-bold">S/ ${m.precio_venta.toFixed(2)}</td>
+                <td class="text-end font-monospace text-success fw-bold">S/ ${m.ganancia.toFixed(2)}</td>
+                <td class="text-end font-monospace text-warning fw-bold bg-warning bg-opacity-10">${m.markup.toFixed(1)}%</td>
+                <td class="text-center"><button class="btn btn-xs btn-outline-danger py-0 px-2" onclick="deleteMachineSaleField('${m.id_mach}')"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>
+        `;
+    });
+
+    dtMachinesMaster = $('#tableMachineSalesMaster').DataTable({
+        destroy: true, pageLength: 5, dom: 'Bfrtip',
+        buttons: [{ extend: 'excelHtml5', text: '<i class="fa-solid fa-file-excel me-1"></i> Descargar Reporte de Máquinas (Excel)', className: 'btn btn-success btn-sm mt-2' }],
+        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json' }
+    });
+}
+
+function deleteMachineSaleField(id) {
+    if(confirm("¿Eliminar registro de esta máquina?")) {
+        REGISTRO_VENTAS_MAQUINAS = REGISTRO_VENTAS_MAQUINAS.filter(m => m.id_mach !== id);
+        localStorage.setItem('vendrix_stored_machines', JSON.stringify(REGISTRO_VENTAS_MAQUINAS));
+        renderMachineSalesMasterTable();
+    }
+}
+
+// ========================================================
+// CONTROLES DE LA NUEVA PESTAÑA: VENDRIX PROYECTOS (GANTT)
+// ========================================================
+function handleNewProyectoTaskSubmit(e) {
+    e.preventDefault();
+    const client = document.getElementById('projClientName').value.trim();
+    const task = document.getElementById('projTaskName').value.trim();
+    const start = document.getElementById('projStartDate').value;
+    const end = document.getElementById('projEndDate').value;
+    const user = document.getElementById('projUser').value.trim();
+    const progress = parseInt(document.getElementById('projProgressPct').value) || 100;
+
+    REGISTRO_PROYECTOS_GANTT.push({
+        id: `P-${Date.now()}`, cliente: client, tarea: task, inicio: start, fin: end, responsable: user, progreso: progress
+    });
+
+    localStorage.setItem('vendrix_stored_gantt', JSON.stringify(REGISTRO_PROYECTOS_GANTT));
+    document.getElementById('formAddProyectoTask').reset();
+    renderGanttLiveChart();
+    alert("¡Hito inyectado al diagrama de Gantt en vivo!");
+}
+
+function renderGanttLiveChart() {
+    const wrapper = document.getElementById('ganttLiveWrapperContainer'); if(!wrapper) return;
+    wrapper.innerHTML = '';
+
+    if(REGISTRO_PROYECTOS_GANTT.length === 0) {
+        wrapper.innerHTML = '<div class="text-center text-muted p-4">No hay actividades registradas en el cronograma.</div>';
+        return;
+    }
+
+    REGISTRO_PROYECTOS_GANTT.forEach((p, idx) => {
+        // Alternar colores estéticos elegantes para las barras
+        const colorClass = idx % 3 === 0 ? 'bg-primary' : (idx % 3 === 1 ? 'bg-success' : 'bg-warning text-dark');
+        
+        wrapper.innerHTML += `
+            <div class="gantt-row-item">
+                <div class="gantt-label-task">
+                    <strong>${p.cliente}</strong><br>
+                    <small class="text-muted">${p.tarea}</small>
+                </div>
+                <div class="gantt-bar-wrapper">
+                    <div class="gantt-bar-fill ${colorClass}" style="width: ${p.progreso}%;">
+                        ${p.progreso}% [${p.responsable}] (${p.inicio} al ${p.fin})
+                    </div>
+                </div>
+                <div class="ms-2">
+                    <i class="fa-solid fa-circle-minus text-danger" style="cursor:pointer;" onclick="deleteGanttTaskField('${p.id}')"></i>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function deleteGanttTaskField(id) {
+    if(confirm("¿Eliminar actividad del cronograma Gantt?")) {
+        REGISTRO_PROYECTOS_GANTT = REGISTRO_PROYECTOS_GANTT.filter(p => p.id !== id);
+        localStorage.setItem('vendrix_stored_gantt', JSON.stringify(REGISTRO_PROYECTOS_GANTT));
+        renderGanttLiveChart();
+    }
+}
+
+// CONTROLES MÓDULO EGRESOS OPERATIVOS EXTRA
 function handleNewGastoSubmit(e) {
     e.preventDefault();
     const gNum = document.getElementById('gastoNum').value.trim();
@@ -196,11 +331,10 @@ function handleNewGastoSubmit(e) {
     HISTORIAL_GASTOS_EXTRA.push({
         "id_gasto": `GASTO-${Date.now()}`, num_comprobante: gNum, fecha: gDate, monto: gAmount, motivo: gReason, responsable: gUser, observacion: gObs, adjunto: "Boleta.pdf", completo: true
     });
-    
-    guardarEnLaNube("gastos", HISTORIAL_GASTOS_EXTRA);
+    localStorage.setItem('vendrix_bi_stored_gastos', JSON.stringify(HISTORIAL_GASTOS_EXTRA));
     document.getElementById('formAddGasto').reset();
     document.getElementById('gastoDate').value = new Date().toISOString().split('T')[0];
-    renderGastosMasterTable();
+    renderGastosMasterTable(); alert("¡Egreso guardado!");
 }
 
 function renderGastosMasterTable() {
@@ -211,41 +345,25 @@ function renderGastosMasterTable() {
             <tr>
                 <td class="font-monospace fw-bold">${g.num_comprobante}</td><td>${g.fecha}</td>
                 <td class="text-end fw-bold text-danger">S/ ${g.monto.toFixed(2)}</td><td>${g.motivo}</td><td>${g.responsable}</td><td>${g.observacion}</td>
-                <td class="text-center text-primary"><i class="fa-solid fa-file-pdf fs-5" style="cursor:pointer;" onclick="alert('Abriendo boleta digital.')"></i></td>
+                <td class="text-center text-primary"><i class="fa-solid fa-file-pdf fs-5" style="cursor:pointer;" onclick="alert('Abriendo boleta adjunta digital.')"></i></td>
                 <td class="text-center"><div class="form-check form-switch d-inline-block"><input class="form-check-input" type="checkbox" ${g.completo ? 'checked':''} onclick="toggleGastoStatus('${g.id_gasto}')"><label class="form-check-label small fw-bold text-${g.completo?'success':'warning'}">${g.completo ? 'Completo':'Pendiente'}</label></div></td>
                 <td class="text-center"><button class="btn btn-xs btn-outline-danger py-0 px-2" onclick="deleteGastoField('${g.id_gasto}')"><i class="fa-solid fa-trash-can"></i></button></td>
-            </tr>`;
+            </tr>
+        `;
     });
     dtGastosMaster = $('#tableGastosMaster').DataTable({ destroy: true, pageLength: 5, order: [[1, 'desc']], language: { url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json' } });
 }
 
 function toggleGastoStatus(id) {
     let gasto = HISTORIAL_GASTOS_EXTRA.find(g => g.id_gasto === id);
-    if(gasto) { gasto.completo = !gasto.completo; guardarEnLaNube("gastos", HISTORIAL_GASTOS_EXTRA); renderGastosMasterTable(); }
+    if(gasto) { gasto.completo = !gasto.completo; localStorage.setItem('vendrix_bi_stored_gastos', JSON.stringify(HISTORIAL_GASTOS_EXTRA)); renderGastosMasterTable(); }
 }
 
 function deleteGastoField(id) {
-    if(confirm("¿Borrar egreso?")) { HISTORIAL_GASTOS_EXTRA = HISTORIAL_GASTOS_EXTRA.filter(g => g.id_gasto !== id); guardarEnLaNube("gastos", HISTORIAL_GASTOS_EXTRA); renderGastosMasterTable(); }
+    if(confirm("¿Borrar egreso?")) { HISTORIAL_GASTOS_EXTRA = HISTORIAL_GASTOS_EXTRA.filter(g => g.id_gasto !== id); localStorage.setItem('vendrix_bi_stored_gastos', JSON.stringify(HISTORIAL_GASTOS_EXTRA)); renderGastosMasterTable(); }
 }
 
-function handleDicProductSubmit(e) {
-    e.preventDefault();
-    const code = document.getElementById('dicProductCode').value.trim().toUpperCase();
-    const name = document.getElementById('dicProductName').value.trim();
-    const price = parseFloat(document.getElementById('dicProductPrice').value) || 0;
-    const costoActual = DICCIONARIO_PRODUCTOS[code] ? DICCIONARIO_PRODUCTOS[code].costo : 0;
-
-    DICCIONARIO_PRODUCTOS[code] = { "nombre": name, "precio": price, "costo": costoActual };
-    guardarEnLaNube("diccionario", DICCIONARIO_PRODUCTOS);
-
-    DATABASE_STATE.forEach(r => { if (r.rawCode === code) { r.producto = name; } });
-    guardarEnLaNube("ventas", DATABASE_STATE);
-
-    cancelDicEditMode();
-    buildStockSelectorAutoComplete();
-    renderDicMasterTable();
-}
-
+// CATÁLOGO COMERCIAL
 function renderDicMasterTable() {
     const tbody = document.querySelector('#tableDicMaster tbody'); if (!tbody) return;
     if (dtDicMaster) { dtDicMaster.destroy(); } tbody.innerHTML = '';
@@ -257,7 +375,7 @@ function renderDicMasterTable() {
                 <td class="text-center"><button class="btn btn-xs btn-outline-primary py-0 px-2 small me-1" onclick="editDicProductField('${code}')"><i class="fa-solid fa-pen"></i></button><button class="btn btn-xs btn-outline-danger py-0 px-2 small" onclick="deleteDicProductField('${code}')"><i class="fa-solid fa-trash"></i></button></td>
             </tr>`;
     });
-    dtDicMaster = $('#tableDicMaster').DataTable({ destroy: true, pageLength: 10, dom: 'Bfrtip', buttons: [{ extend: 'excelHtml5', text: '<i class="fa-solid fa-file-excel me-1"></i> Descargar Catálogo', className: 'btn btn-success btn-sm mt-2' }], order: [[4, 'desc']], language: { url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json' } });
+    dtDicMaster = $('#tableDicMaster').DataTable({ destroy: true, pageLength: 10, dom: 'Bfrtip', buttons: [{ extend: 'excelHtml5', text: '<i class="fa-solid fa-file-excel me-1"></i> Descargar Catálogo (Excel)', className: 'btn btn-success btn-sm mt-2' }], order: [[4, 'desc']], language: { url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json' } });
 }
 
 function editDicProductField(code) {
@@ -267,13 +385,14 @@ function editDicProductField(code) {
 }
 
 function deleteDicProductField(code) {
-    if (confirm("¿Borrar del catálogo?")) { delete DICCIONARIO_PRODUCTOS[code]; guardarEnLaNube("diccionario", DICCIONARIO_PRODUCTOS); renderDicMasterTable(); }
+    if (confirm("¿Borrar del catálogo?")) { delete DICCIONARIO_PRODUCTOS[code]; localStorage.setItem('vendrix_bi_stored_dic', JSON.stringify(DICCIONARIO_PRODUCTOS)); renderDicMasterTable(); processAndRenderAll(); }
 }
 
 function cancelDicEditMode() {
     document.getElementById('formAddDicProduct').reset(); document.getElementById('dicProductCode').disabled = false; document.getElementById('dicFormTitle').innerHTML = `<i class="fa-solid fa-circle-plus me-2"></i>Registrar / Editar Producto`;
 }
 
+// FACTURACIÓN DE STOCK EN ALMACÉN
 function handleNewInvoiceSubmit(e) {
     e.preventDefault();
     const invoiceNum = document.getElementById('stockInvoiceNum').value.trim();
@@ -287,18 +406,18 @@ function handleNewInvoiceSubmit(e) {
         const unitCostCalculated = (totalCost - discount) / qty;
         if (!DICCIONARIO_PRODUCTOS[code]) { DICCIONARIO_PRODUCTOS[code] = { "nombre": `Snack Casilla ${code}`, "precio": unitCostCalculated * 1.5, "costo": unitCostCalculated }; } 
         else { DICCIONARIO_PRODUCTOS[code].costo = unitCostCalculated; }
-        guardarEnLaNube("diccionario", DICCIONARIO_PRODUCTOS);
+        localStorage.setItem('vendrix_bi_stored_dic', JSON.stringify(DICCIONARIO_PRODUCTOS));
 
         if (CURRENT_EDIT_LOTE_ID) {
             let loteObj = HISTORIAL_COMPRAS_LOTES.find(l => l.id_lote === CURRENT_EDIT_LOTE_ID);
             if (loteObj) { loteObj.num_factura = invoiceNum; loteObj.fecha_compra = dateInvoice; loteObj.rawCode = code; loteObj.costo_total = totalCost; loteObj.descuento = discount; loteObj.cantidad = qty; loteObj.costo_unitario = unitCostCalculated; }
             CURRENT_EDIT_LOTE_ID = null; document.getElementById('stockFormTitle').innerHTML = `<i class="fa-solid fa-file-invoice-dollar me-2"></i>Registrar Factura de Compra`;
         } else {
-            HISTORIAL_COMPRAS_LOTES.push({ "id_lote": `LOTE-${Date.now()}`, num_factura: invoiceNum, fecha_compra: dateInvoice, rawCode: code, costo_total: totalCost, descuento: discount, cantidad: qty, costo_unitario: unitCostCalculated });
+            HISTORIAL_COMPRAS_LOTES.push({ "id_lote": `LOTE-${Date.now()}-${Math.random().toString().substring(5)}`, num_factura: invoiceNum, fecha_compra: dateInvoice, rawCode: code, costo_total: totalCost, descuento: discount, cantidad: qty, costo_unitario: unitCostCalculated });
         }
-        guardarEnLaNube("lotes", HISTORIAL_COMPRAS_LOTES);
+        localStorage.setItem('vendrix_bi_stored_lotes', JSON.stringify(HISTORIAL_COMPRAS_LOTES));
         document.getElementById('stockInvoiceNum').value = ''; document.getElementById('stockProductSelectorAutoComplete').value = ''; document.getElementById('stockProductCode').value = ''; document.getElementById('stockQty').value = ''; document.getElementById('stockTotalCost').value = ''; document.getElementById('stockDiscount').value = '0.00';
-        renderDicMasterTable(); renderInvoiceHistoryTable();
+        renderDicMasterTable(); renderInvoiceHistoryTable(); processAndRenderAll(); alert("¡Factura Procesada!");
     }
 }
 
@@ -323,7 +442,7 @@ function editInvoiceLoteField(id) {
 }
 
 function deleteInvoiceLote(id) {
-    if(confirm("¿Borrar factura?")) { HISTORIAL_COMPRAS_LOTES = HISTORIAL_COMPRAS_LOTES.filter(l => l.id_lote !== id); guardarEnLaNube("lotes", HISTORIAL_COMPRAS_LOTES); renderInvoiceHistoryTable(); }
+    if(confirm("¿Borrar factura?")) { HISTORIAL_COMPRAS_LOTES = HISTORIAL_COMPRAS_LOTES.filter(l => l.id_lote !== id); localStorage.setItem('vendrix_bi_stored_lotes', JSON.stringify(HISTORIAL_COMPRAS_LOTES)); renderInvoiceHistoryTable(); processAndRenderAll(); }
 }
 
 function convertRawTextToStagingPreview() {
@@ -347,7 +466,7 @@ function convertRawTextToStagingPreview() {
 
 function commitStagingToDashboard() {
     if (STAGING_MEMORIA_TEMPORAL.length === 0) return;
-    if (confirm("¿Aprobar transacciones?")) { DATABASE_STATE = [...STAGING_MEMORIA_TEMPORAL]; guardarEnLaNube("ventas", DATABASE_STATE); document.getElementById('rawCsvPasteData').value = ''; document.getElementById('stagingCardContainer').classList.add('d-none'); populateSelectors(DATABASE_STATE); document.querySelector('#main-nav a[href="#dashboard-section"]').click(); }
+    if (confirm("¿Aprobar transacciones?")) { DATABASE_STATE = [...STAGING_MEMORIA_TEMPORAL]; localStorage.setItem('vendrix_bi_stored_data', JSON.stringify(DATABASE_STATE)); document.getElementById('rawCsvPasteData').value = ''; document.getElementById('stagingCardContainer').classList.add('d-none'); populateSelectors(DATABASE_STATE); processAndRenderAll(); document.querySelector('#main-nav a[href="#dashboard-section"]').click(); }
 }
 
 function populateSelectors(data) {
