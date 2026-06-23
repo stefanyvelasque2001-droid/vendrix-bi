@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VENDRIX Enterprise Suite</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome para Iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    <!-- Custom Theme Ecosistema VENDRIX -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .menu-header-panel {
+            background-color: #1e293b;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-uppercase: true;
+            padding: 10px 15px 5px 15px;
+            letter-spacing: 0.5px;
+        }
+        .gantt-container-custom {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .gantt-row-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+        .gantt-label-task {
+            width: 25%;
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.85rem;
+        }
+        .gantt-bar-wrapper {
+            width: 75%;
+            background-color: #f1f5f9;
+            border-radius: 20px;
+            position: relative;
+            height: 24px;
+            overflow: hidden;
+        }
+        .gantt-bar-fill {
+            height: 100%;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            transition: width 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR ACORDEÓN VERTICAL INTEGRAL -->
+    <div class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-crown text-warning me-2"></i> <span>VENDRIX MASTER</span>
+        </div>
+        <nav class="nav flex-column mt-3" id="main-nav">
+            
+            <!-- ACORDEÓN 1: MODULE VENDRIX BI -->
+            <div class="menu-header-panel"><i class="fa-solid fa-layer-group me-1"></i> Línea Snacks: Vendrix BI</div>
+            <a class="nav-link active" href="#dashboard-section"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard Core</a>
+            <a class="nav-link" href="#convertidor-section"><i class="fa-solid fa-wand-magic-sparkles text-warning me-2"></i> Convertidor BI</a>
+            <a class="nav-link" href="#productos-section"><i class="fa-solid fa-cookie-bite me-2"></i> Alertas y Rotación</a>
+            <a class="nav-link" href="#diccionario-section"><i class="fa-solid fa-book text-success me-2"></i> Catálogo de Precios</a>
+            <a class="nav-link" href="#stock-section"><i class="fa-solid fa-boxes-stacked text-primary me-2"></i> Control de Stock</a>
+            <a class="nav-link" href="#simulador-section"><i class="fa-solid fa-calculator text-info me-2"></i> Simulador Compras</a>
+            <a class="nav-link" href="#gastos-section"><i class="fa-solid fa-receipt text-danger me-2"></i> Egresos Operativos</a>
+            
+            <!-- ACORDEÓN 2: MODULE VENDRIX VENTAS -->
+            <div class="menu-header-panel"><i class="fa-solid fa-shop me-1"></i> Línea Maquinarias: Ventas</div>
+            <a class="nav-link" href="#vendrix-ventas-section"><i class="fa-solid fa-money-bill-trend-up text-success me-2"></i> Venta de Máquinas</a>
+            
+            <!-- ACORDEÓN 3: MODULE VENDRIX PROYECTOS -->
+            <div class="menu-header-panel"><i class="fa-solid fa-folder-tree me-1"></i> Expansión Corporativa</div>
+            <a class="nav-link" href="#vendrix-proyectos-section"><i class="fa-solid fa-calendar-check text-info me-2"></i> Hitos y Gantt Vivo</a>
+
+            <div class="menu-header-panel"><i class="fa-solid fa-database me-1"></i> Auditoría global</div>
+            <a class="nav-link" href="#transacciones-section"><i class="fa-solid fa-receipt me-2"></i> Transacciones</a>
+        </nav>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        <!-- Topbar -->
+        <header class="topbar d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0 fw-bold text-dark">Ecosistema Corporativo — VENDRIX</h1>
+                <small class="text-muted">Consolidado General e Interactivo de Inteligencia de Negocios</small>
+            </div>
+            <button class="btn btn-danger btn-sm fw-bold shadow-sm" id="btnClearData">
+                <i class="fa-solid fa-trash-can"></i> Reiniciar Todo el Sistema (Cero Absoluto)
+            </button>
+        </header>
+
+        <!-- Contenedor Dinámico de Alertas -->
+        <div id="alertContainer" class="mb-4"></div>
+
+        <!-- Filtros Globales Reactivos -->
+        <div class="card card-custom mb-4 border-primary shadow-sm" id="globalFilterCard">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="card-title text-uppercase text-muted fw-bold small mb-0"><i class="fa-solid fa-filter text-primary me-2"></i>Filtros de Segmentación Global Dinámica</h6>
+                    <button class="btn btn-primary btn-sm fw-bold px-3 shadow-sm" id="btnForceRefreshGlobal">
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> Recalcular y Refrescar Todo
+                    </button>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Fecha Inicio</label>
+                        <input type="date" id="filterStartDate" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Fecha Fin</label>
+                        <input type="date" id="filterEndDate" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Estado Ventas</label>
+                        <select id="filterStatus" class="form-select form-select-sm" disabled>
+                            <option value="ACEPTADA" selected>ACEPTADA (Filtrado Automático)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Medio de Pago</label>
+                        <select id="filterPayment" class="form-select form-select-sm">
+                            <option value="TODOS">Todos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Máquina</label>
+                        <select id="filterMachine" class="form-select form-select-sm">
+                            <option value="TODOS">Todas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button id="btnResetFilters" class="btn btn-secondary btn-sm w-100 fw-bold">Limpiar Filtros</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 1: VENDRIX BI (CORE DE SNACKS)     -->
+        <!-- ========================================== -->
+        
+        <!-- DASHBOARD CORE -->
+        <div id="dashboard-section" class="content-view">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4 col-xl-2.4 col-sm-6">
+                    <div class="card card-custom kpi-card border-primary-custom">
+                        <div class="card-body">
+                            <div class="text-muted small text-uppercase fw-bold">Ventas Totales Snacks</div>
+                            <div class="h3 my-1 fw-bold text-dark" id="kpiTotalSales">S/ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-2.4 col-sm-6">
+                    <div class="card card-custom kpi-card border-success-custom">
+                        <div class="card-body">
+                            <div class="text-muted small text-uppercase fw-bold" id="titleTodayKpi">Ventas Último Día</div>
+                            <div class="h3 my-1 fw-bold text-success" id="kpiTodaySales">S/ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-2.4 col-sm-6">
+                    <div class="card card-custom kpi-card border-info-custom">
+                        <div class="card-body">
+                            <div class="text-muted small text-uppercase fw-bold">Productos Vendidos</div>
+                            <div class="h3 my-1 fw-bold text-info" id="kpiTotalQty">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-2.4 col-sm-6">
+                    <div class="card card-custom kpi-card border-warning-custom">
+                        <div class="text-muted small text-uppercase fw-bold">Ticket Promedio</div>
+                        <div class="h3 my-1 fw-bold text-warning" id="kpiAvgTicket">S/ 0.00</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-2.4 col-sm-6">
+                    <div class="card card-custom kpi-card border-danger-custom" style="background-color: #fffdfd;">
+                        <div class="card-body">
+                            <div class="text-danger small text-uppercase fw-bold"><i class="fa-solid fa-calculator me-1"></i>Ganancia Exacta (Real)</div>
+                            <div class="h3 my-1 fw-bold text-danger" id="kpiTotalProfit">S/ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meta Anual -->
+            <div class="card card-custom mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold mb-0"><i class="fa-solid fa-bullseye text-danger me-2"></i>Cumplimiento de Meta Anual (S/ 15,000):</h5>
+                        <span class="badge bg-primary fs-6 fw-bold" id="metaPercentage">0%</span>
+                    </div>
+                    <div class="progress progress-custom mb-3">
+                        <div id="metaProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="row text-center row-divider g-2">
+                        <div class="col-md-4">
+                            <div class="text-muted small">Monto Acumulado Anual</div>
+                            <div class="fs-5 fw-bold text-dark" id="metaAccumulated">S/ 0.00</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-muted small">Ganancia Exacta Acumulada</div>
+                            <div class="fs-5 fw-bold text-success" id="metaProfit">S/ 0.00</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-muted small">Monto Faltante Meta (Venta)</div>
+                            <div class="fs-5 fw-bold text-danger" id="metaMissing">S/ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="card card-custom h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-chart-area text-primary me-2"></i>Histórico Temporal de Ventas</h5>
+                            <div class="chart-container">
+                                <canvas id="chartHistory"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card card-custom h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-pie-chart text-info me-2"></i>Medios de Pago</h5>
+                            <div class="chart-container">
+                                <canvas id="chartPayments"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONVERTIDOR -->
+        <div id="convertidor-section" class="content-view d-none">
+            <div class="card card-custom mb-4 border-warning">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark mb-2"><i class="fa-solid fa-paste text-warning me-2"></i>Pestaña Convertidora Automática</h5>
+                    <p class="text-muted small mb-3">Copia las celdas completas de tu reporte de Excel y pégalas aquí. El sistema aplicará el filtro de ventas "ACEPTADAS" y normalizará los montos y métodos de pago automáticamente.</p>
+                    <textarea id="rawCsvPasteData" class="form-control font-monospace mb-3" rows="6" placeholder="Pega aquí los datos copiados directamente de tu Excel..."></textarea>
+                    <button class="btn btn-warning fw-bold text-dark w-100 shadow-sm" id="btnPreviewPasteData">
+                        <i class="fa-solid fa-magnifying-glass-chart me-1"></i> Convertir y Previsualizar Tabla de Datos
+                    </button>
+                </div>
+            </div>
+
+            <div class="card card-custom d-none border-primary" id="stagingCardContainer">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="card-title fw-bold text-primary mb-1"><i class="fa-solid fa-eye me-2"></i>Mapeo y Previsualización de Datos Normalizados</h5>
+                            <span class="text-muted small">Revisa que los montos, conversiones QR correspondan antes de actualizar el Dashboard.</span>
+                        </div>
+                        <button class="btn btn-success fw-bold px-4 shadow" id="btnCommitStagingData">
+                            <i class="fa-solid fa-cloud-arrow-up me-1"></i> Aprobar y Reemplazar Dashboard (Opción B)
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered small align-middle" id="tableStagingPreview">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Máquina</th>
+                                    <th>Código Sel.</th>
+                                    <th>Producto (Diccionario Actual)</th>
+                                    <th>Estado</th>
+                                    <th>Medio Pago</th>
+                                    <th class="text-end">Cant.</th>
+                                    <th class="text-end">Valor (S/)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS Y ROTACIÓN -->
+        <div id="productos-section" class="content-view d-none">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-trophy text-warning me-2"></i>TOP 10 Snacks Más Vendidos</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle row-border custom-table" id="tableTopProducts">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Código Selección</th>
+                                            <th>Nombre Producto</th>
+                                            <th class="text-end">Cant. Vendida</th>
+                                            <th class="text-end">Monto (S/)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-chart-bar text-primary me-2"></i>Volumen de Salidas por Código</h5>
+                            <div class="chart-container">
+                                <canvas id="chartTopProducts"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-custom bg-light-green h-100 shadow-sm border-start border-success border-3">
+                        <div class="card-body">
+                            <h6 class="text-success fw-bold mb-3"><i class="fa-solid fa-hand-holding-dollar me-2"></i>Mayor Margen de Ganancia Unitario</h6>
+                            <ul class="list-group list-group-flush bg-transparent" id="listProfitable"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom bg-light-orange h-100 shadow-sm border-start border-warning border-3">
+                        <div class="card-body">
+                            <h6 class="text-warning fw-bold mb-3"><i class="fa-solid fa-arrow-down-short-wide me-2"></i>Los 5 Productos Menos Vendidos</h6>
+                            <ul class="list-group list-group-flush bg-transparent" id="listLessSold"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom bg-light-red h-100 shadow-sm border-start border-danger border-3">
+                        <div class="card-body">
+                            <h6 class="text-danger fw-bold mb-3"><i class="fa-solid fa-fire-flame-curved me-2"></i>Deben Venderse Más (Stock Alto Estancado)</h6>
+                            <ul class="list-group list-group-flush bg-transparent" id="listNoMovement"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DICCIONARIO Y PRECIOS COMERCIALES -->
+        <div id="diccionario-section" class="content-view d-none">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card card-custom border-success shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-success mb-2" id="dicFormTitle"><i class="fa-solid fa-circle-plus me-2"></i>Catálogo de Productos</h5>
+                            <p class="text-muted small mb-3">Define los códigos de la máquina y sus precios de venta de cara al público.</p>
+                            <form id="formAddDicProduct">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Código Selección (Casilla)</label>
+                                    <input type="text" id="dicProductCode" class="form-control form-control-sm font-monospace" required placeholder="Ej: 44">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Nombre Comercial</label>
+                                    <input type="text" id="dicProductName" class="form-control form-control-sm" required placeholder="Ej: Inka Chips Papas Nativas">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Precio de Venta (S/)</label>
+                                    <input type="number" id="dicProductPrice" class="form-control form-control-sm" step="0.01" min="0" required placeholder="0.00">
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-success btn-sm w-100 fw-bold">Guardar Catálogo</button>
+                                    <button type="button" class="btn btn-secondary btn-sm d-none" id="btnCancelDicEdit">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-1"><i class="fa-solid fa-book-open text-success me-2"></i>Catálogo Maestro y Tabla de Márgenes</h5>
+                            <p class="text-muted small mb-3">Filtra, ordena por margen o % de Markup real, y descarga el reporte completo a Excel.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered align-middle small w-100" id="tableDicMaster">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Código Sel.</th>
+                                            <th>Nombre Comercial</th>
+                                            <th class="text-end">Último Costo (S/)</th>
+                                            <th class="text-end text-info">Precio Venta (S/)</th>
+                                            <th class="text-end text-success">Margen (S/)</th>
+                                            <th class="text-end text-success">Margen (%)</th>
+                                            <th class="text-end text-warning fw-bold">Markup (%)</th>
+                                            <th class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROL DE STOCK -->
+        <div id="stock-section" class="content-view d-none">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-custom border-primary shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary mb-2" id="stockFormTitle"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Registrar Factura de Compra</h5>
+                            <p class="text-muted small mb-3">Busca el producto por su nombre comercial para autocompletar la casilla de la máquina de forma inmediata.</p>
+                            <form id="formAddStock">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Número de Factura / Boleta</label>
+                                    <input type="text" id="stockInvoiceNum" class="form-control form-control-sm font-monospace" required placeholder="Ej: F001-0004325">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Buscador por Nombre de Snack (Autocompletar)</label>
+                                    <select id="stockProductSelectorAutoComplete" class="form-select form-select-sm fw-bold border-primary">
+                                        <!-- Se carga dinámicamente con JS -->
+                                    </select>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Código Selección</label>
+                                        <input type="text" id="stockProductCode" class="form-control form-control-sm font-monospace" readonly required placeholder="Casilla">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Fecha de Ingreso</label>
+                                        <input type="date" id="stockInvoiceDate" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">Cant. Comprada</label>
+                                        <input type="number" id="stockQty" class="form-control form-control-sm font-monospace" min="1" required placeholder="Uds.">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">Costo Total (Bruto)</label>
+                                        <input type="number" id="stockTotalCost" class="form-control form-control-sm font-monospace" step="0.01" min="0" required placeholder="S/ 0.00">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">Descuento (S/)</label>
+                                        <input type="number" id="stockDiscount" class="form-control form-control-sm font-monospace" step="0.01" min="0" value="0.00">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm">Registrar Entrada de Factura</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-1"><i class="fa-solid fa-warehouse text-primary me-2"></i>Kardex e Inventario Real de Almacén (Tabla Tipo Excel Reactiva)</h5>
+                            <p class="text-muted small mb-3">Muestra las compras y salidas filtradas estrictamente bajo el rango de fechas superior.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered align-middle small w-100" id="tableStockKardex">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Código Selección</th>
+                                            <th>Nombre del Producto</th>
+                                            <th class="text-end text-danger bg-danger bg-opacity-10">Último Costo Unit.</th>
+                                            <th class="text-end text-success bg-success bg-opacity-10">Total Compras Rango</th>
+                                            <th class="text-end text-warning bg-warning bg-opacity-10">Unidades Vendidas Rango</th>
+                                            <th class="text-end table-primary text-dark fw-bold">Stock Remanente</th>
+                                            <th>Alerta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORIAL CRONOLÓGICO -->
+            <div class="card card-custom border-secondary">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-secondary mb-3"><i class="fa-solid fa-clock-rotate-left me-2"></i>Historial de Auditoría Contable de Compras</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered align-middle small w-100" id="tableInvoiceHistory">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>N° Factura</th>
+                                    <th>Fecha Entrada</th>
+                                    <th>Casilla</th>
+                                    <th>Nombre Producto</th>
+                                    <th class="text-end">Costo Total</th>
+                                    <th class="text-end text-muted">Descuento</th>
+                                    <th class="text-end">Cantidad</th>
+                                    <th class="text-end text-primary fw-bold">Costo Unit. Neto</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIMULADOR COMPRAS -->
+        <div id="simulador-section" class="content-view d-none">
+            <div class="card card-custom mb-4 border-info shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-dark mb-0"><i class="fa-solid fa-calculator text-info me-2"></i>Simulador de Abastecimiento Semanal / Quincenal</h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="small fw-bold text-muted text-uppercase mb-0">Periodo Cobertura:</label>
+                            <select id="simPeriodDays" class="form-select form-select-sm fw-bold border-info" style="width: 220px;">
+                                <option value="7" selected>1 Semana (7 Días Proy.)</option>
+                                <option value="14">2 Semanas (14 Días Proy.)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-0">El sistema calcula la velocidad de salida de cada snack del reporte cargado, evalúa tu stock actual restante (Opción A) y te genera la sugerencia exacta de unidades que debes comprar para reponer tu inventario.</p>
+                </div>
+            </div>
+
+            <div class="card card-custom">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-file-signature text-secondary me-2"></i>Orden de Compra Sugerida para Proveedores</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered align-middle small w-100" id="tableSimulationOrder">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Casilla</th>
+                                    <th>Nombre del Snack</th>
+                                    <th class="text-end text-warning">Venta Diaria Prom.</th>
+                                    <th class="text-end">Stock Requerido</th>
+                                    <th class="text-end text-info">Stock Físico Actual</th>
+                                    <th class="text-end bg-success text-white fw-bold">Cantidad a Comprar</th>
+                                    <th>Estado Crítico</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EGRESOS OPERATIVOS EXTRA -->
+        <div id="gastos-section" class="content-view d-none">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-custom border-danger shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-danger mb-2" id="gastoFormTitle"><i class="fa-solid fa-receipt me-2"></i>Registrar Gasto Extra</h5>
+                            <p class="text-muted small mb-3">Registra los desembolsos operativos adicionales (Luz, alquiler, mantenimiento, etc.).</p>
+                            <form id="formAddGasto">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Nro Comprobante / Recibo</label>
+                                    <input type="text" id="gastoNum" class="form-control form-control-sm font-monospace" required placeholder="Ej: RUC-2026-001">
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Fecha del Gasto</label>
+                                        <input type="date" id="gastoDate" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Monto Total (S/)</label>
+                                        <input type="number" id="gastoAmount" class="form-control form-control-sm font-monospace" step="0.01" min="0" required placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Motivo / Concepto del Gasto</label>
+                                    <input type="text" id="gastoReason" class="form-control form-control-sm" required placeholder="Ej: Pago de Luz de oficina">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Responsable / Encargado</label>
+                                    <input type="text" id="gastoUser" class="form-control form-control-sm" required placeholder="Ej: Administrador">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Observación Adicional</label>
+                                    <input type="text" id="gastoObs" class="form-control form-control-sm" placeholder="Ninguna">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Subir Documento / Boleta (Imagen o PDF)</label>
+                                    <input type="file" id="gastoFile" class="form-control form-control-sm">
+                                </div>
+                                <button type="submit" class="btn btn-danger btn-sm w-100 fw-bold shadow-sm">Registrar Gasto Administrativo</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-1"><i class="fa-solid fa-wallet text-danger me-2"></i>Libro Diario de Egresos y Gastos Extra</h5>
+                            <p class="text-muted small mb-3">Haz clic directamente sobre la casilla de la columna **"Estado de Cierre"** para marcar el gasto como Completo o Pendiente.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered align-middle small w-100" id="tableGastosMaster">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Nro</th>
+                                            <th>Fecha</th>
+                                            <th class="text-end">Monto</th>
+                                            <th>Motivo</th>
+                                            <th>Responsable</th>
+                                            <th>Observación</th>
+                                            <th class="text-center">Adjunto</th>
+                                            <th class="text-center bg-primary">Estado de Cierre</th>
+                                            <th class="text-center">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 2: VENDRIX VENTAS (MÁQUINAS)        -->
+        <!-- ========================================== -->
+        <div id="vendrix-ventas-section" class="content-view d-none">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card card-custom border-success shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-success mb-2"><i class="fa-solid fa-calculator me-2"></i>Registro de Costos de Máquinas Vending</h5>
+                            <p class="text-muted small mb-3">Ingresa los costos de fábrica y gastos logísticos para calcular automáticamente el costo unitario total y evaluar márgenes de venta reales.</p>
+                            <form id="formAddMachineSale">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">ID / Nombre de la Máquina</label>
+                                    <input type="text" id="machId" class="form-control form-control-sm" required placeholder="Ej: Vending Alpha Premium 2026">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Costo Adquisición Fábrica (S/)</label>
+                                    <input type="number" id="machCostFactory" class="form-control form-control-sm font-monospace" required placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Gastos Logísticos de Importación / Traslado (S/)</label>
+                                    <input type="number" id="machCostLogistics" class="form-control form-control-sm font-monospace" required placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Costos Periféricos / Software Integrado (S/)</label>
+                                    <input type="number" id="machCostPeripherals" class="form-control form-control-sm font-monospace" required placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Mano de Obra / Configuración Técnica (S/)</label>
+                                    <input type="number" id="machCostLabor" class="form-control form-control-sm font-monospace" required placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Precio de Venta Cobrado al Cliente (S/)</label>
+                                    <input type="number" id="machPriceFinal" class="form-control form-control-sm font-monospace" required placeholder="0.00" step="0.01">
+                                </div>
+                                <button type="submit" class="btn btn-success btn-sm w-100 fw-bold shadow-sm">Procesar Venta de Máquina</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-1"><i class="fa-solid fa-list-check text-success me-2"></i>Historial de Órdenes de Máquinas Vendidas</h5>
+                            <p class="text-muted small mb-3">Mesa de control de utilidades: Muestra el costo neto consolidado, precio final facturado, ganancia líquida y % de Markup real por equipo.</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered align-middle small w-100" id="tableMachineSalesMaster">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID / Modelo Máquina</th>
+                                            <th class="text-end">Costos Fábrica + Log.</th>
+                                            <th class="text-end">Software + Setup</th>
+                                            <th class="text-end table-danger">Costo Total Neto</th>
+                                            <th class="text-end table-success text-dark">Precio Facturado</th>
+                                            <th class="text-end text-success fw-bold">Ganancia Líquida</th>
+                                            <th class="text-end text-warning fw-bold">Markup (%)</th>
+                                            <th class="text-center">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 3: VENDRIX PROYECTOS (GANTT VIVO)   -->
+        <!-- ========================================== -->
+        <div id="vendrix-proyectos-section" class="content-view d-none">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-custom border-info shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-info mb-2"><i class="fa-solid fa-folder-plus me-2"></i>Gestor de Hitos y Tareas</h5>
+                            <p class="text-muted small mb-3">Añade tareas operativas o planes de expansión. El diagrama de Gantt de abajo se dibujará de forma dinámica en tiempo real al guardar.</p>
+                            <form id="formAddProyectoTask">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Nombre del Proyecto / Cliente</label>
+                                    <input type="text" id="projClientName" class="form-control form-control-sm" required placeholder="Ej: Expansión Corporativa Lima">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Tarea / Actividad Crítica</label>
+                                    <input type="text" id="projTaskName" class="form-control form-control-sm" required placeholder="Ej: Configurar Telemetría y Tarjetas">
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Fecha Inicio</label>
+                                        <input type="date" id="projStartDate" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Fecha Fin</label>
+                                        <input type="date" id="projEndDate" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Responsable</label>
+                                        <input type="text" id="projUser" class="form-control form-control-sm" required placeholder="Ej: Técnico Logístico">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">% Avance Actual</label>
+                                        <select id="projProgressPct" class="form-select form-select-sm fw-bold text-primary">
+                                            <option value="10">10% (Inicio)</option>
+                                            <option value="25">25% (Planificado)</option>
+                                            <option value="50">50% (A mitad de camino)</option>
+                                            <option value="75">75% (Etapa de Cierre)</option>
+                                            <option value="100" selected>100% (Completado)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info text-dark fw-bold btn-sm w-100 shadow-sm">Inyectar Actividad al Gantt</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <!-- DIAGRAMA DE GANTT VIVO CON RESTRUCTURACIÓN COMPLETA -->
+                    <div class="card card-custom h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark mb-1"><i class="fa-solid fa-chart-gantt text-info me-2"></i>Diagrama de Gantt Multi-Etapa de Operaciones</h5>
+                            <p class="text-muted small mb-4">Planificación visual interactiva de hitos corporativos.</p>
+                            <div class="gantt-container-custom" id="ganttLiveWrapperContainer">
+                                <!-- Filas dinámicas inyectadas por JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA: TRANSACCIONES -->
+        <div id="transacciones-section" class="content-view d-none">
+            <div class="card card-custom mb-4">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark mb-3"><i class="fa-solid fa-list-check text-secondary me-2"></i>Historial de Ventas Cargadas</h5>
+                    <div class="table-responsive">
+                        <table id="dtTransactions" class="table table-striped table-bordered w-100 small align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Máquina / ID</th>
+                                    <th>Código Sel.</th>
+                                    <th>Producto</th>
+                                    <th>Estado</th>
+                                    <th>Medio Pago</th>
+                                    <th class="text-end">Cant.</th>
+                                    <th class="text-end">Valor (S/)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts Esenciales -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <!-- Aplicación Engine Core -->
+    <script src="app.js"></script>
+</body>
+</html>
